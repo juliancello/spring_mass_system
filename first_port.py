@@ -10,7 +10,7 @@ Reduced row echelon form function (rref) adapted from Wikipedia pseudocode
 
 from math import sqrt, cos, sin, pow
 from numpy import arange, array, csingle, divide, identity, linalg, matmul, multiply, subtract
-# import matplotlib?
+import matplotlib.pyplot as plt
 # TODO: refactor variable names to conform to PEP 8
 
 
@@ -59,7 +59,7 @@ e_val_2_A = (((a + f) - sqrt(pow((-a - f), 2) - (4 * (a * f - b * c)))) * .5)  #
 om1 = sqrt(abs(e_val_1_A))  # omega om1 = 2.7146
 om2 = sqrt(abs(e_val_2_A))  # is this needed? om2 = 5.6019
 # v =  # Find eigenvector of e-val 1
-time_matrix = arange(0, 11, 1)  # example. Possible user input
+time_matrix = arange(0, 11, .05)  # example. Possible user input
 B1 = rref(A - (e_val_1_A * identity(2)))  # B1 = [[1, -0.8508],[0,0]]
 B2 = rref(A - (e_val_2_A * identity(2)))  # B2 = [[1, 2.3508],[0,0]]
 if B1[0, 1] == 0 or B2[0, 1] == 0:
@@ -73,8 +73,29 @@ c1 = 1
 c3 = c1
 c2 = (0+1j)
 c4 = c2
-x = [ev1 * (c1 * cos(om1 * t) + c2 * sin(om1 * t)) + ev2 * (c3 * cos(om2 * t) + c4 * sin(om2 * t)) for t in time_matrix]
-# x, ev1, t, and ev2 are arrays/vectors
+system_array_c = [
+    ev1 * (c1 * cos(om1 * t) + c2 * sin(om1 * t)) + ev2 * (c3 * cos(om2 * t) + c4 * sin(om2 * t)) for t in time_matrix
+]
+system_array = [
+    ev1 * (c1 * cos(om1 * t) + c1 * sin(om1 * t)) + ev2 * (c3 * cos(om2 * t) + c3 * sin(om2 * t)) for t in time_matrix
+]
+# system_array, ev1, t, and ev2 are arrays/vectors
 # c1, om1, c2, c3, om2, and c4 are floats/scalars
 # (14) c2, c4 have i in them
-print(x)
+print(system_array)  # test
+print(system_array_c)  # test
+print(system_array[0][0])  # test
+
+X1 = [x.real[0] for x in system_array_c]
+Y1 = [x.imag[0] for x in system_array_c]
+X2 = [x.real[1] for x in system_array_c]
+Y2 = [x.imag[1] for x in system_array_c]
+# plt.scatter(X,Y, color='red')
+# plt.plot(system_array)
+# plt.show()
+fig, axs = plt.subplots(2, 2, figsize=(5, 5))
+axs[0, 0].plot(time_matrix, X1)
+axs[1, 0].plot(time_matrix, Y1)
+axs[0, 1].plot(time_matrix, X2)
+axs[1, 1].plot(time_matrix, Y2)
+plt.show()
